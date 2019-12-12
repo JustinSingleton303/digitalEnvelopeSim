@@ -31,6 +31,7 @@ public class Receiver {
 	private static int BUFFER_SIZE = 32 * 1024;
 	//AES stuff
 	static byte[] encryptionKey;
+	static byte[] secKey;
 	static String IV = "AAAAAAAAAAAAAAAA";
 	//needed files
 	File xFilePub = new File("xPublic.key");
@@ -58,12 +59,13 @@ public class Receiver {
 			//call SHA256 calculation method
 			//with name of file holding Ks//M//Ks
 			expectedHash = readDataInFromFile("message.khmac");
-			encryptionKey = readDataInFromFile("Symmetric.key");
-			
+			encryptionKey = readDataInFromFile("message.kmk");
+					
 		}catch(Exception e) {
 			System.out.println("Local hash calculation exception");
 			e.printStackTrace();
 		}
+		
 		
 		//RSA decryption portion
 		try {
@@ -71,7 +73,8 @@ public class Receiver {
 			PrivateKey yPri = Receiver.readPrivKeyFromFile("yPrivate.key");
 			//get encrypted message for decryption
 			byte[] rsaCipher = Receiver.readDataInFromFile("kxy.rsacipher");
-			byte[] aesCipher = rsaDecrypt(yPri, rsaCipher);
+		        secKey = rsaDecrypt(yPri, rsaCipher);
+			byte[] aesCipher = Receiver.readDataInFromFile("message.aescipher");
 			byte[] kmk = decrypt(aesCipher);
 			
 			byte[] actualHash = md(kmk);
@@ -94,7 +97,7 @@ public class Receiver {
 	}
 	
 	public static byte[] md(byte[] in) throws Exception {
-			BufferedInputStream bis = new BufferedInputStream(new ByteArrayInputStream(in));
+		BufferedInputStream bis = new BufferedInputStream(new ByteArrayInputStream(in));
 		    MessageDigest md = MessageDigest.getInstance("SHA-256");
 		    DigestInputStream dis = new DigestInputStream(bis, md);
 		    int i;
@@ -114,12 +117,12 @@ public class Receiver {
 	    //Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding", "SunJCE");
 	    Cipher cipher = Cipher.getInstance("AES/CFB8/NoPadding", "SunJCE");
 	    //Cipher cipher = Cipher.getInstance("AES/CFB/NoPadding", "SunJCE");
-	    SecretKeySpec key = new SecretKeySpec(encryptionKey, "AES");
+	    SecretKeySpec key = new SecretKeySpec(secKey, "AES");
 	    cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(IV.getBytes()));
 	    byte[] output = cipher.doFinal(cipherText);
 	    
 	    byte[] expected = readDataInFromFile("message.kmk");
-	    doesItMatch(output,expected);
+	   // doesItMatch(output,expected);
 	    
 	    return output;
 	    //return new String(cipher.doFinal(cipherText),"UTF-8");
@@ -216,7 +219,7 @@ public class Receiver {
 		    	System.out.println("Encrypted message bytes:" + val);
 		    	return val;
 		    } catch (IOException e) {
-		        System.out.println("Read Symmetric key from file exception");
+		       // System.out.println("Read Symmetric key from file exception");
 		        e.printStackTrace();
 		    }
 		    
@@ -232,7 +235,7 @@ public class Receiver {
 
 		    byte[] aesCipher = cipher.doFinal(input);
 		    
-		    byte[] expected = readDataInFromFile("message.aescipher");
+		   /* byte[] expected = readDataInFromFile("message.aescipher");
 		    if (aesCipher.length != expected.length) {
 		    	System.out.println("ERROR:" + aesCipher.length + "/" + expected.length);
 		    }
@@ -242,7 +245,7 @@ public class Receiver {
 		    		System.out.println("mismatch at "+ i);
 		    		break;
 		    	}
-		    }
+		    }*/
 		    
 		    System.out.println(new String(aesCipher));
 

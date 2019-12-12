@@ -89,8 +89,8 @@ public class Sender {
 			
 			//call hash function and write result to file
 			String hashVal = Sender.md("message.kmk");
-			//AESBytes = hashVal.getBytes();
-			//Sender.byteWriter(AESBytes, "message.khmac"); //hashed sandwich
+			AESBytes = hashVal.getBytes();
+			Sender.byteWriter(AESBytes, "message.khmac"); //hashed sandwich
 			}catch(Exception e) {
 			System.out.println("SHA256 Calculation Exception");
 			e.printStackTrace();
@@ -315,26 +315,16 @@ public class Sender {
 		  retByte = ReadAllBytes(fileName);
 		  return retByte;
 	  }
+	 
+	 public static void byteWriter(byte[] byteFile, String fileDest){
+	 	  try(FileOutputStream os = new FileOutputStream(fileDest)){
+		  	os.write(byteFile);
+		  }catch(Exception e){
+		  	e.printStackTrace();
+		  }
+	 }
 
-	  public byte[] readBytesInFromFile(String fileName) throws IOException{
-		  byte [] retByte = new byte[128];
-		  BufferedInputStream bis = new BufferedInputStream(new FileInputStream(fileName));
-		  retByte = getByteArray(bis);
-		  bis.close();
-		  return retByte;			
-	  }
-	  
-	  private static void byteWriter(byte[] bytes, String fileName) {
-	        try (FileOutputStream os = new FileOutputStream(fileName)) {
-	            	System.out.println("number of bytes = " + Integer.toString( bytes.length));
-			os.write(bytes);
-		    
-	        } catch (IOException e) {
-	            	e.printStackTrace();
-	        }
-	    }
-	  
-	  private static void byteAppender(byte[] byteFile, String fileDest) {
+	 private static void byteAppender(byte[] byteFile, String fileDest) {
 	        try (FileOutputStream os = new FileOutputStream(fileDest, true)) {
 	            os.write(byteFile);
 	        } catch (IOException e) {
