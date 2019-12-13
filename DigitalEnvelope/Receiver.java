@@ -75,7 +75,8 @@ public class Receiver {
 			byte[] rsaCipher = Receiver.readDataInFromFile("kxy.rsacipher");
 		        secKey = rsaDecrypt(yPri, rsaCipher);
 			byte[] aesCipher = Receiver.readDataInFromFile("message.aescipher");
-			byte[] kmk = decrypt(aesCipher);
+			byte[] decrypted = decrypt(aesCipher);
+			byte[] kmk = Receiver.readDataInFromFile("message.kmk");
 			
 			byte[] actualHash = md(kmk);
 			System.out.println("Acutal Hash:" + Utilities.bytesToHex(actualHash));
@@ -84,7 +85,7 @@ public class Receiver {
 			
 			doesItMatch(actualHash,expectedHash);
 			
-			System.out.println(new String(kmk));
+			System.out.println(new String(decrypted));
 			
 		}catch(Exception e) {
 			System.out.println("RSA decryption excption");
