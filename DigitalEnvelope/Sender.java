@@ -90,7 +90,7 @@ public class Sender {
 			//call hash function and write result to file
 			String hashVal = Sender.md("message.kmk");
 			AESBytes = hashVal.getBytes();
-			Sender.byteWriter(AESBytes, "message.khmac"); //hashed sandwich
+		//	Sender.byteWriter(AESBytes, "message.khmac"); //hashed sandwich
 			}catch(Exception e) {
 			System.out.println("SHA256 Calculation Exception");
 			e.printStackTrace();
@@ -146,10 +146,13 @@ public class Sender {
 	    MessageDigest md = MessageDigest.getInstance("SHA-256");
 	    DigestInputStream in = new DigestInputStream(file, md);
 	    int i;
+	    byte[] buf = null;
 	    byte[] buffer = new byte[BUFFER_SIZE];
 	    do {
 	      i = in.read(buffer, 0, BUFFER_SIZE);
 	    } while (i == BUFFER_SIZE);
+	    //i = in.read(buffer, 0, BUFFER_SIZE);
+		
 	    md = in.getMessageDigest();
 	    in.close();
 
@@ -321,7 +324,7 @@ public class Sender {
 		  	os.write(byteFile);
 		  }catch(Exception e){
 		  	e.printStackTrace();
-		  }
+		  }//os.close();
 	 }
 
 	 private static void byteAppender(byte[] byteFile, String fileDest) {
@@ -329,7 +332,7 @@ public class Sender {
 	            os.write(byteFile);
 	        } catch (IOException e) {
 	            e.printStackTrace();
-	        }
+	        }//os.close();
 	    }
 	  
 	  public static String readStringFromFile(String fileName) throws IOException{
@@ -340,21 +343,7 @@ public class Sender {
 		  return retString;
 	  }
 	  
-	 /* public static void appendKeyToFile(String fileName, String wriStr) throws Exception{
-		  	FileWriter myWrite = new FileWriter(fileName, true);
-		  	PrintWriter myPrint = new PrintWriter(myWrite);
-		  
-		  	System.out.println("Write to " + fileName + " " + wriStr);
-		  	try {
-		  		myPrint.print(wriStr);
-		  	}catch(Exception e) {
-		  		System.out.println("Write key to file exception");
-		  }finally {
-			  	myWrite.close();
-		  }
-	  }
-	  */
-	  
+			  
 	public static byte[] getByteArray(BufferedInputStream inputBytes) throws IOException{
 		
 		 byte[] retBytes = new byte[16];
@@ -364,10 +353,10 @@ public class Sender {
 		 do{
 			cntLine = inputBytes.read(retBytes);
 			if(cntLine < 16 && cntLine > 0){
-				retBytes = Arrays.copyOfRange(retBytes, 0, cntLine);//Justin?
+				//retBytes = Arrays.copyOfRange(retBytes, 0, cntLine);//Justin?
 				bos.write(retBytes);
 			}
-			if(cntLine != -1){
+			if(cntLine == -1){
 				bos.write(retBytes);
 			}
 		}while(cntLine != -1);
