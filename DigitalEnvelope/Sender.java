@@ -343,21 +343,7 @@ public class Sender {
 		  return retString;
 	  }
 	  
-	 /* public static void appendKeyToFile(String fileName, String wriStr) throws Exception{
-		  	FileWriter myWrite = new FileWriter(fileName, true);
-		  	PrintWriter myPrint = new PrintWriter(myWrite);
-		  
-		  	System.out.println("Write to " + fileName + " " + wriStr);
-		  	try {
-		  		myPrint.print(wriStr);
-		  	}catch(Exception e) {
-		  		System.out.println("Write key to file exception");
-		  }finally {
-			  	myWrite.close();
-		  }
-	  }
-	  */
-	  
+			  
 	public static byte[] getByteArray(BufferedInputStream inputBytes) throws IOException{
 		
 		 byte[] retBytes = new byte[16];

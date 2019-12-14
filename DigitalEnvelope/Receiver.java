@@ -123,7 +123,7 @@ public class Receiver {
 	    byte[] output = cipher.doFinal(cipherText);
 	    
 	    byte[] expected = readDataInFromFile("message.kmk");
-	   // doesItMatch(output,expected);
+	    doesItMatch(output,expected);
 	    
 	    return output;
 	    //return new String(cipher.doFinal(cipherText),"UTF-8");
